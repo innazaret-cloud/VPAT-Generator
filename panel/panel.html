@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>VPAT Generator</title>
+<link rel="stylesheet" href="panel.css" />
+</head>
+<body>
+<div class="panel" id="app">
+
+  <header class="panel-header">
+    <h1>VPAT Generator</h1>
+    <div class="header-actions">
+      <button id="newSessionBtn" type="button" class="btn btn-outline btn-small">Clear Session</button>
+      <span class="version-badge" id="versionBadge"></span>
+    </div>
+  </header>
+  <p id="sessionStatus" class="status-line session-status" role="status" aria-live="polite"></p>
+
+  <details class="settings" id="settings">
+    <summary>Report settings</summary>
+    <div class="settings-body">
+      <div class="field-row">
+        <label for="productName">Product Name <span class="required" aria-hidden="true">*</span><span class="visually-hidden"> (required)</span></label>
+        <input id="productName" type="text" placeholder="e.g. Acme Dashboard" autocomplete="off" required />
+      </div>
+      <div class="field-row">
+        <label for="productVersion">Product Version</label>
+        <input id="productVersion" type="text" placeholder="e.g. 3.2.1" autocomplete="off" />
+      </div>
+      <div class="field-row">
+        <label for="productDescription">Product Description</label>
+        <textarea id="productDescription" rows="3" placeholder="One short paragraph describing the product"></textarea>
+      </div>
+      <div class="field-row">
+        <label for="contactInfo">Contact Information</label>
+        <input id="contactInfo" type="text" placeholder="Email or name" autocomplete="off" />
+      </div>
+      <div class="field-row">
+        <label for="notes">Notes <span class="optional">(optional)</span></label>
+        <input id="notes" type="text" placeholder="None" autocomplete="off" />
+      </div>
+      <div class="field-row">
+        <label for="preparedBy">Prepared by</label>
+        <input id="preparedBy" type="text" placeholder="Your name" autocomplete="name" />
+      </div>
+      <div class="field-row">
+        <label for="company">Company <span class="optional">(optional)</span></label>
+        <input id="company" type="text" autocomplete="organization" />
+      </div>
+      <div class="field-row">
+        <label for="reportDate">Date</label>
+        <input id="reportDate" type="date" />
+      </div>
+      <p class="hint">Saved automatically and used on the report cover page.</p>
+    </div>
+  </details>
+
+  <section class="session-card" aria-labelledby="sessionTitle">
+    <div class="session-head">
+      <h2 class="session-title" id="sessionTitle">No session yet</h2>
+      <span id="lastSaved" class="last-saved">Not saved yet</span>
+    </div>
+    <ul id="pageList" class="page-list"></ul>
+    <div id="emptyState" class="empty-state">
+      <svg class="empty-icon" viewBox="0 0 48 48" width="40" height="40" aria-hidden="true" focusable="false">
+        <rect x="9" y="6" width="30" height="36" rx="4" fill="none" stroke="currentColor" stroke-width="2.5" />
+        <path d="M16 17h16M16 24h16M16 31h9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+      </svg>
+      <p class="empty-title">No pages scanned yet</p>
+      <p class="empty-sub">Open the page you want to test, then scan it. Add as many pages as the report needs.</p>
+      <button id="emptyScanBtn" type="button" class="btn btn-primary" disabled>Scan this page</button>
+    </div>
+  </section>
+
+  <section class="current-page" aria-labelledby="currentLabel">
+    <h2 class="current-page-label" id="currentLabel">Current page</h2>
+    <p id="currentUrl" class="current-url">-</p>
+    <fieldset class="scan-modes">
+      <legend class="visually-hidden">Scans to run</legend>
+      <label><input id="modeAxe" type="checkbox" checked /> Engine scan</label>
+      <label><input id="modeKeyboard" type="checkbox" checked /> Keyboard scan</label>
+    </fieldset>
+    <button id="scanBtn" type="button" class="btn btn-primary btn-block" disabled>Scan this page</button>
+    <p id="scanHint" class="hint" hidden>Enter a Product Name in Report settings to start scanning.</p>
+  </section>
+
+  <button id="exportBtn" type="button" class="btn btn-primary btn-block" disabled>Generate VPAT</button>
+  <p id="scanStatus" class="status-line" role="status" aria-live="polite"></p>
+  <p id="exportStatus" class="status-line" role="status" aria-live="polite"></p>
+
+  <details class="summary-details" id="summaryDetails">
+    <summary>Conformance summary</summary>
+    <div class="summary-grid" id="summaryGrid">
+      <div class="summary-item bucket-supports">
+        <span class="summary-count" id="summarySupports">0</span>
+        <span class="summary-label">Supports</span>
+      </div>
+      <div class="summary-item bucket-partially">
+        <span class="summary-count" id="summaryPartially">0</span>
+        <span class="summary-label">Partially Supports</span>
+      </div>
+      <div class="summary-item bucket-does-not">
+        <span class="summary-count" id="summaryDoesNot">0</span>
+        <span class="summary-label">Does Not Support</span>
+      </div>
+      <div class="summary-item bucket-ne">
+        <span class="summary-count" id="summaryNE">0</span>
+        <span class="summary-label">Not Evaluated</span>
+      </div>
+    </div>
+    <p class="hint"><span id="summaryNA">0</span> marked Not Applicable. Levels are set from the scans. Override one only on your own determination: Not Applicable where the criterion does not apply to this product, or Does Not Support with a note explaining why.</p>
+    <ul id="criteriaList" class="criteria-list"></ul>
+  </details>
+
+  <footer class="panel-footer">axe-core · IBM Equal Access · HTML CodeSniffer</footer>
+
+  <template id="pageRowTemplate">
+    <li class="page-row" data-page-id="">
+      <div class="page-row-main">
+        <span class="page-check" aria-hidden="true">✓</span>
+        <span class="page-id">
+          <span class="page-line"><span class="page-name"></span><span class="page-count"></span></span>
+          <span class="page-url"></span>
+        </span>
+        <button type="button" class="btn-remove" data-action="delete">×</button>
+      </div>
+      <details class="page-details">
+        <summary>Details</summary>
+        <div class="page-scanned"></div>
+        <div class="page-badges"></div>
+        <div class="page-row-actions">
+          <button type="button" class="btn btn-small" data-action="rescan-axe">Re-scan engines</button>
+          <button type="button" class="btn btn-small" data-action="rescan-keyboard">Re-scan keyboard</button>
+          <button type="button" class="btn btn-small" data-action="rename">Rename</button>
+        </div>
+      </details>
+    </li>
+  </template>
+
+  <!-- One modal for confirmations, choices and the page-name prompt. -->
+  <dialog id="dialog" class="confirm-dialog" aria-labelledby="dialogMessage">
+    <form method="dialog" id="dialogForm">
+      <p id="dialogMessage"></p>
+      <div class="field-row" id="dialogField" hidden>
+        <label for="dialogInput" id="dialogInputLabel"></label>
+        <input id="dialogInput" type="text" autocomplete="off" />
+      </div>
+      <div class="confirm-actions" id="dialogActions"></div>
+    </form>
+  </dialog>
+
+</div>
+<script src="panel.bundle.js"></script>
+</body>
+</html>

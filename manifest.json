@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "VPAT Generator",
+  "short_name": "VPAT Generator",
+  "version": "0.5.0",
+  "icons": { "16": "icons/icon16.png", "32": "icons/icon32.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "description": "Scans pages with axe-core, IBM Equal Access, HTML CodeSniffer and keyboard simulation and drafts a WCAG 2.2 AA VPAT 2.5 report (.docx/.pdf).",
+  "permissions": ["storage", "activeTab", "scripting", "sidePanel", "tabs"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background/service-worker.bundle.js"
+  },
+  "side_panel": {
+    "default_path": "panel/panel.html"
+  },
+  "action": {
+    "default_title": "Open VPAT Generator",
+    "default_icon": { "16": "icons/icon16.png", "32": "icons/icon32.png", "48": "icons/icon48.png", "128": "icons/icon128.png" }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}
