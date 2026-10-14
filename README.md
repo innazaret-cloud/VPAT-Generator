@@ -4,6 +4,9 @@ A Chrome extension that scans web pages for WCAG 2.2 accessibility issues and au
 
 Built as a tool for accessibility practitioners and procurement reviewers who need defensible, audit-ready documentation without manually compiling results from multiple scanners.
 
+![VPAT Generator scanning Hint Astrology App](./sample/screenshot-hint.png)
+![VPAT Generator scanning Vanta](./sample/screenshot-vanta.png)
+
 ---
 
 ## What it does
@@ -61,8 +64,8 @@ No single scanner catches everything. axe-core, IBM Equal Access, and HTML CodeS
 
 ## Sample output
 
-- [`hint-astrology-app-VPAT-2026-10-14.pdf`](./samples/hint-astrology-app-VPAT-2026-10-14.pdf) — scan of Hint Astrology App
-- [`vanta-web-VPAT-2026-10-14.pdf`](./samples/vanta-web-VPAT-2026-10-14.pdf) — scan of Vanta web app
+- [`hint-astrology-app-VPAT-2026-10-14.pdf`](./sample/hint-astrology-app-VPAT-2026-10-14.pdf) — scan of Hint Astrology App
+- [`vanta-web-VPAT-2026-10-14.pdf`](./sample/vanta-web-VPAT-2026-10-14.pdf) — scan of Vanta web app
 
 ---
 
