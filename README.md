@@ -37,8 +37,8 @@ No single scanner catches everything. axe-core, IBM Equal Access, and HTML CodeS
 | Extension platform | Chrome Manifest V3, Side Panel API |
 | Scanning | axe-core 4.14.0, IBM Equal Access 4.0.34, HTML CodeSniffer 2.5.1 |
 | Keyboard simulation | Custom content script |
-| Document generation | docx.js, jsPDF |
-| State persistence | `chrome.storage.local` |
+| Document generation | docx.js (.docx), pdfmake (.pdf) |
+| State persistence | `localStorage` (session survives closing the panel and browser restarts) |
 
 ---
 
@@ -47,7 +47,7 @@ No single scanner catches everything. axe-core, IBM Equal Access, and HTML CodeS
 1. Clone or download this repo
 2. Open Chrome → `chrome://extensions`
 3. Enable **Developer mode** (top right toggle)
-4. Click **Load unpacked** → select the `dist/chrome` folder
+4. Click **Load unpacked** → select the repo folder (the one that contains `manifest.json`)
 5. Click the extension icon to open the side panel
 
 ---
@@ -55,9 +55,9 @@ No single scanner catches everything. axe-core, IBM Equal Access, and HTML CodeS
 ## Usage
 
 1. Open the side panel on any web page
-2. Enter a product name (required — appears in the VPAT header)
-3. Click **Scan Page** — results appear per WCAG criterion
-4. Scan additional pages as needed (each adds to the report)
+2. Enter a product name in **Report settings** (required — appears in the VPAT header)
+3. Click **Scan this page** — results appear per WCAG criterion
+4. Scan additional pages as needed (each adds to the report). Use **Clear Session** to start a new product.
 5. Click **Generate VPAT** → choose `.docx` or `.pdf`
 
 ---
@@ -68,6 +68,31 @@ No single scanner catches everything. axe-core, IBM Equal Access, and HTML CodeS
 - [`vanta-web-VPAT-2026-10-14.pdf`](./sample/vanta-web-VPAT-2026-10-14.pdf) — scan of Vanta web app
 
 ---
+
+## Limitations
+
+This tool drafts a VPAT. It doesn't replace an accessibility expert.
+
+- Automated scanners only catch part of WCAG issues. Things like screen reader announcements, whether alt text actually makes sense, reading order, and complex keyboard flows still need manual testing.
+- Conformance levels are based on violation counts, which is a proxy, not a judgment. Every report should be reviewed and adjusted before it goes to a client. The extension lets you override any criterion (Not Applicable, Does Not Support with a note).
+- Scans cover the pages you scan. Anything behind a login, a modal, or a state you didn't reach isn't in the report.
+
+In accessibility, a confident wrong answer can create legal risk, so the output is intentionally a draft for human review.
+
+---
+
+## How it was built
+
+I'm a product manager, not a developer. I've written and reviewed VPATs by hand for years, so I knew exactly where the time goes. I built this extension with Claude as my coding partner: architecture, the multi-engine de-duplication, keyboard simulation, the WCAG mapping, debugging, and the export. I made the product calls (what to automate, what to leave for human review, how strict the thresholds should be) and tested it against real sites.
+
+The extension itself doesn't call an LLM. Compliance reports need to be consistent and traceable, so the same scan always produces the same output.
+
+---
+
+## Roadmap
+
+- **AI remediation plan** (next): take the same scan results, group issues by root cause (for example, one broken component behind 50 findings), and write plain-English fixes with code examples for developers. Optionally turn them into GitHub issues after a human approves them. The VPAT itself stays deterministic; AI goes into the fix plan, not the compliance record.
+- Manual testing checklist generated per page, for the criteria automation can't cover.
 
 ## Status
 
