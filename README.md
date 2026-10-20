@@ -71,9 +71,9 @@ No single scanner catches everything. axe-core, IBM Equal Access, and HTML CodeS
 
 ## Status
 
-Version 0.5.0 — functional, actively developed. Known issues:
+Version 0.5.0 — functional, actively developed.
 
-- **Session bleed**: accumulated scan data persists if the extension is not reset between unrelated scans. Reset via the domain-change dialog when scanning a new product.
+- **Fixed — session bleed**: scans of a new site used to land in the previous site's report if the side panel stayed open while browsing. The extension now checks the domain right before every new scan, not only when the panel opens, and asks whether to keep both sites in one report or start fresh.
 
 ---
 

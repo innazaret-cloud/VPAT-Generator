@@ -93448,6 +93448,10 @@ ${r.element}` : r.element,
             }
             target = { page: page2, isNew: false };
           } else {
+            if (!(await confirmDomainChange(tab.url))) {
+              el.scanStatus.textContent = "Scan cancelled.";
+              return;
+            }
             target = await chooseTargetPage(tab);
             if (!target) {
               el.scanStatus.textContent = "Scan cancelled.";
@@ -93568,25 +93572,37 @@ ${r.element}` : r.element,
         if (choice && choice.value === "fresh") startFreshSession();
         else persist();
       }
-      async function checkDomainChange() {
-        await refreshActiveTab();
-        if (busy || session.pages.length === 0) return;
+      // Results from one site must not end up in another site's report. The side panel stays
+      // open while the user browses, so this runs both when the panel opens and right before
+      // every new scan. "Keep" is remembered for that site so the question isn't asked again.
+      // Returns false when the user dismisses the dialog without choosing.
+      async function confirmDomainChange(url) {
+        if (session.pages.length === 0) return true;
         const previous = storage.lastScannedDomain(session);
-        const current = storage.domainOf(activeTab && activeTab.url);
-        if (!previous || !current || previous === current) return;
-        if ((session.keptForDomains || []).includes(current)) return;
+        const current = storage.domainOf(url);
+        if (!previous || !current || previous === current) return true;
+        if ((session.keptForDomains || []).includes(current)) return true;
         const choice = await showDialog({
-          message: `You have scan data from ${previous}. Clear it and start fresh?`,
+          message: `You have scan data from ${previous}. This page is on ${current}. Keep both in one report, or clear the old data and start fresh?`,
           // Keeping the data is the prominent (and Enter) choice; clearing is the outline button.
-          buttons: [{ label: "Keep", value: "keep", primary: true }, { label: "Clear", value: "clear", danger: true }]
+          buttons: [{ label: "Keep both", value: "keep", primary: true }, { label: "Clear and start fresh", value: "clear", danger: true }]
         });
-        if (choice && choice.value === "clear") {
+        if (!choice) return false;
+        if (choice.value === "clear") {
           startFreshSession();
         } else {
-          session.keptForDomains = [...session.keptForDomains || [], current];
+          session.keptForDomains = [...(session.keptForDomains || []), current];
           persist({ touch: false });
         }
+        return true;
       }
+
+      async function checkDomainChange() {
+        await refreshActiveTab();
+        if (busy) return;
+        await confirmDomainChange(activeTab && activeTab.url);
+      }
+
       async function startupChecks() {
         await checkStaleSession();
         await checkDomainChange();
