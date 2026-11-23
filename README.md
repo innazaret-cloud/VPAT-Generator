@@ -4,8 +4,8 @@ A Chrome extension that scans web pages for WCAG 2.2 accessibility issues and au
 
 Built as a tool for accessibility practitioners and procurement reviewers who need defensible, audit-ready documentation without manually compiling results from multiple scanners.
 
-![VPAT Generator scanning Hint Astrology App](./sample/screenshot-hint.png)
-![VPAT Generator scanning Vanta](./sample/screenshot-vanta.png)
+![VPAT Generator scanning a sample web app (site name blurred)](./sample/screenshot-scan-1.png)
+![VPAT Generator conformance summary with manual overrides (site name blurred)](./sample/screenshot-scan-2.png)
 
 ---
 
