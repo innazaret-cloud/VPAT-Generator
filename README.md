@@ -62,13 +62,6 @@ No single scanner catches everything. axe-core, IBM Equal Access, and HTML CodeS
 
 ---
 
-## Sample output
-
-- [`hint-astrology-app-VPAT-2026-10-14.pdf`](./sample/hint-astrology-app-VPAT-2026-10-14.pdf) — scan of Hint Astrology App
-- [`vanta-web-VPAT-2026-10-14.pdf`](./sample/vanta-web-VPAT-2026-10-14.pdf) — scan of Vanta web app
-
----
-
 ## Limitations
 
 This tool drafts a VPAT. It doesn't replace an accessibility expert.
